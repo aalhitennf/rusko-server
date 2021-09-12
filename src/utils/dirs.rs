@@ -88,10 +88,19 @@ fn create_commands_file(path: &Path) -> Result<()> {
 
     let mut file = OpenOptions::new().create_new(true).write(true).open(path)?;
 
+    #[cfg(target_os = "linux")]
     let default_commands = if cfg!(test) {
         "Example :: true"
     } else {
         "Volume up :: pactl set-sink-volume @DEFAULT_SINK@ +5%\nVolume down :: pactl set-sink-volume @DEFAULT_SINK@ -5%\nToggle mute :: pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    };
+
+    #[cfg(target_os = "windows")]
+    let default_commands = if cfg!(test) {
+        "Example :: dir"
+    } else {
+        // ? Don't know what to put in here
+        "Example :: dir"
     };
 
     file.write_all(default_commands.as_bytes())
