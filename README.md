@@ -9,8 +9,17 @@ Server of the [Rusko](https://github.com/aalhitennf/rusko-client) remote app. Ru
         -v, --verbose    Enable console logging.
         -V, --version    Prints version information
 
- 
+ **Installation**  
+
+ Arch Linux:  
+
+     yay -S rusko-server
+
+On other distros, after building, move the binary manually where you want, i.e. `mv build/rusko-v0.1.1/rusko /usr/bin/rusko`.
+
 **Building**
+
+Install rust and cargo.
 
 - Linux
     - `./build.sh`  
@@ -75,4 +84,5 @@ Almost all traffic between client and server is secured with AES-128 bit encrypt
 
 
 **Disclaimer**
+
 Rusko was made mainly for personal use and learning purposes, no guarantees or warranties.
