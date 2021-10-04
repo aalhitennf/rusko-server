@@ -10,26 +10,28 @@ pub struct Command {
     pub args: Option<Vec<String>>,
 }
 
-// TODO Ugly
+// Prevent process lockdown by running command in thread
 impl Command {
-    pub fn execute(&self) -> bool {
-        if let Some(args) = &self.args {
-            if let Err(e) = std::process::Command::new(&self.command)
-                .args(args)
-                .output()
-            {
-                log::error!("Stderr running command: {} {:?}", &self.alias, e.kind());
-                return false;
-            };
-
-            return true;
+    pub fn execute(&self) {
+        let cmd = self.command.clone();
+        let alias = self.alias.clone();
+        match &self.args {
+            Some(args) => {
+                let args = args.clone();
+                std::thread::spawn(move || {
+                    if let Err(e) = std::process::Command::new(&cmd).args(args).output() {
+                        log::error!("Stderr running command: {} {:?}", &alias, e.kind());
+                    };
+                });
+            }
+            None => {
+                std::thread::spawn(move || {
+                    if let Err(e) = std::process::Command::new(&cmd).output() {
+                        log::error!("Stderr running command: {} {:?}", alias, e.kind());
+                    };
+                });
+            }
         }
-        if let Err(e) = std::process::Command::new(&self.command).output() {
-            log::error!("Stderr running command: {} {:?}", self.alias, e.kind());
-            return false;
-        };
-
-        true
     }
 }
 

@@ -90,7 +90,7 @@ impl Config {
 
         self.paired_devices.push(device);
 
-        write::async_overwrite(
+        write::sync::overwrite(
             self.paired_devices.join("\n"),
             &self.dirs.paired_devices_file,
         )
@@ -106,7 +106,7 @@ impl Config {
             self.paired_devices.remove(index);
         }
 
-        write::async_overwrite(
+        write::sync::overwrite(
             self.paired_devices.join("\n"),
             &self.dirs.paired_devices_file,
         )

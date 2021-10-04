@@ -9,17 +9,14 @@ use crate::{
 pub async fn run(config: Data<Config>, input: String) -> Result<HttpResponse, ServerError> {
     let config = config.lock().await;
 
-    if config
+    config
         .find_command(&decrypt(&input, &config.server.password)?)
         .ok_or(ServerError::BadRequest {
             message: "Command not found".into(),
         })?
-        .execute()
-    {
-        Ok(HttpResponse::Ok().body(encrypt("OK", &config.server.password)?))
-    } else {
-        Ok(HttpResponse::BadRequest().body(encrypt("Failed", &config.server.password)?))
-    }
+        .execute();
+
+    Ok(HttpResponse::Ok().body(encrypt("OK", &config.server.password)?))
 }
 
 #[cfg(test)]
